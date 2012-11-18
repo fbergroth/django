@@ -312,7 +312,7 @@ class ModelAdmin(BaseModelAdmin):
     "Encapsulates all admin options and functionality for a given model."
 
     list_display = ('__str__',)
-    list_display_links = ()
+    list_display_links = None
     list_filter = ()
     list_select_related = False
     list_per_page = 100
@@ -659,11 +659,14 @@ class ModelAdmin(BaseModelAdmin):
         on the changelist. The list_display parameter is the list of fields
         returned by get_list_display().
         """
-        if self.list_display_links or not list_display:
-            return self.list_display_links
+        if self.list_display_links is None:
+            if list_display:
+                # Use only the first item in list_display as link
+                return list(list_display)[:1]
+            else:
+                return None
         else:
-            # Use only the first item in list_display as link
-            return list(list_display)[:1]
+            return self.list_display_links
 
     def construct_change_message(self, request, form, formsets):
         """

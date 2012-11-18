@@ -44,7 +44,7 @@ def validate(cls, model):
                                 % (cls.__name__, idx, field))
 
     # list_display_links
-    if hasattr(cls, 'list_display_links'):
+    if hasattr(cls, 'list_display_links') and cls.list_display_links is not None:
         check_isseq(cls, 'list_display_links', cls.list_display_links)
         for idx, field in enumerate(cls.list_display_links):
             if field not in cls.list_display:
@@ -115,11 +115,11 @@ def validate(cls, model):
                 raise ImproperlyConfigured("'%s.list_editable[%d]' refers to "
                     "'%s' which is not defined in 'list_display'."
                     % (cls.__name__, idx, field_name))
-            if field_name in cls.list_display_links:
+            if cls.list_display_links and field_name in cls.list_display_links:
                 raise ImproperlyConfigured("'%s' cannot be in both '%s.list_editable'"
                     " and '%s.list_display_links'"
                     % (field_name, cls.__name__, cls.__name__))
-            if not cls.list_display_links and cls.list_display[0] in cls.list_editable:
+            if cls.list_display_links is None and cls.list_display[0] in cls.list_editable:
                 raise ImproperlyConfigured("'%s.list_editable[%d]' refers to"
                     " the first field in list_display, '%s', which can't be"
                     " used unless list_display_links is set."

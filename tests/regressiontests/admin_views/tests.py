@@ -8,6 +8,7 @@ try:
     from urllib.parse import urljoin
 except ImportError:     # Python 2
     from urlparse import urljoin
+from selenium.common.exceptions import NoSuchElementException
 
 from django.conf import settings, global_settings
 from django.core import mail
@@ -2998,6 +2999,31 @@ class PrePopulatedTest(TestCase):
         """
         response = self.client.get('/test_admin/admin/admin_views/prepopulatedpostlargeslug/add/')
         self.assertContains(response, "maxLength: 1000")  # instead of 1,000
+
+
+@override_settings(PASSWORD_HASHERS=('django.contrib.auth.hashers.SHA1PasswordHasher',))
+class SeleniumChangeLinkTests(AdminSeleniumWebDriverTestCase):
+    webdriver_class = 'selenium.webdriver.firefox.webdriver.WebDriver'
+    urls = "regressiontests.admin_views.urls"
+    fixtures = ['admin-views-users.xml', 'admin-views-change-link-objects.xml']
+
+    def _change_link_exists(self, object_name, change_link=False):
+        changelist_path = '/test_admin/admin/admin_views/{0}/'.format(object_name)
+        self.selenium.get('%s%s' % (self.live_server_url,changelist_path))
+        path_to_tr = '//table[@id="result_list"]/tbody/tr'
+        path_to_changeview_a = '{0}//a[contains(@href, "{1}/1/")]'.format(path_to_tr, object_name)
+        self.selenium.find_element_by_xpath(path_to_tr)
+        if change_link:
+            self.selenium.find_element_by_xpath(path_to_changeview_a)
+        else:
+            with self.assertRaises(NoSuchElementException):
+                self.selenium.find_element_by_xpath(path_to_changeview_a)
+
+    def test_editable_object(self):
+        self.admin_login(username='super', password='secret', login_url='/test_admin/admin/')
+        self._change_link_exists('changelinkobject', change_link=True)
+        self._change_link_exists('nochangelinkobject')
+        self._change_link_exists('nochangelinkobjectwithlistdisplay')
 
 
 @override_settings(PASSWORD_HASHERS=('django.contrib.auth.hashers.SHA1PasswordHasher',))

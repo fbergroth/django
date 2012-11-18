@@ -656,3 +656,28 @@ class Simple(models.Model):
     """
     Simple model with nothing on it for use in testing
     """
+
+
+class ChangeLinkObject(models.Model):
+    """
+    Model which has change link in changeview.
+    Refs #15185
+    """
+    name = models.CharField(max_length=255)
+
+
+class NoChangeLinkObject(models.Model):
+    """
+    Model which has no change link in changeview.
+    Refs #15185
+    """
+    name = models.CharField(max_length=255)
+
+
+class NoChangeLinkObjectWithListDisplay(models.Model):
+    """
+    Model which has no change link in changeview and uses list_display
+    Refs #15185
+    """
+    name = models.CharField(max_length=255)
+    pony = models.CharField(max_length=255)

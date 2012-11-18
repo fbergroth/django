@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+  <object pk="1" model="admin_views.changelinkobject">
+    <field type="CharField" name="name">Change link object 1</field>
+  </object>
+  <object pk="1" model="admin_views.nochangelinkobject">
+    <field type="CharField" name="name">No change link object 1</field>
+  </object>
+  <object pk="1" model="admin_views.nochangelinkobjectwithlistdisplay">
+    <field type="CharField" name="name">No change link object 1</field>
+    <field type="CharField" name="pony">My little pony</field>
+  </object>
+</django-objects>

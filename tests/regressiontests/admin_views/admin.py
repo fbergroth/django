@@ -27,7 +27,8 @@ from .models import (Article, Chapter, Account, Media, Child, Parent, Picture,
     Album, Question, Answer, ComplexSortedPerson, PrePopulatedPostLargeSlug,
     AdminOrderedField, AdminOrderedModelMethod, AdminOrderedAdminMethod,
     AdminOrderedCallable, Report, Color2, UnorderedObject, MainPrepopulated,
-    RelatedPrepopulated, UndeletableObject, Simple)
+    RelatedPrepopulated, UndeletableObject, Simple, NoChangeLinkObject,
+    NoChangeLinkObjectWithListDisplay, ChangeLinkObject)
 
 
 def callable_year(dt_value):
@@ -593,6 +594,14 @@ class AttributeErrorRaisingAdmin(admin.ModelAdmin):
     list_display = [callable_on_unknown, ]
 
 
+class NoChangeLinkObjectAdmin(admin.ModelAdmin):
+    list_display_links = ()
+
+
+class NoChangeLinkObjectAdminWithListDisplay(admin.ModelAdmin):
+    list_display = ['name', 'pony']
+    list_display_links = ()
+
 site = admin.AdminSite(name="admin")
 site.register(Article, ArticleAdmin)
 site.register(CustomArticle, CustomArticleAdmin)
@@ -667,6 +676,9 @@ site.register(AdminOrderedAdminMethod, AdminOrderedAdminMethodAdmin)
 site.register(AdminOrderedCallable, AdminOrderedCallableAdmin)
 site.register(Color2, CustomTemplateFilterColorAdmin)
 site.register(Simple, AttributeErrorRaisingAdmin)
+site.register(ChangeLinkObject)
+site.register(NoChangeLinkObject, NoChangeLinkObjectAdmin)
+site.register(NoChangeLinkObjectWithListDisplay, NoChangeLinkObjectAdminWithListDisplay)
 
 # Register core models we need in our tests
 from django.contrib.auth.models import User, Group
