@@ -8,7 +8,6 @@ try:
     from urllib.parse import urljoin
 except ImportError:     # Python 2
     from urlparse import urljoin
-from selenium.common.exceptions import NoSuchElementException
 
 from django.conf import settings, global_settings
 from django.core import mail
@@ -3016,6 +3015,9 @@ class SeleniumChangeLinkTests(AdminSeleniumWebDriverTestCase):
         if change_link:
             self.selenium.find_element_by_xpath(path_to_changeview_a)
         else:
+            # Import only if test is run to not break running tests without
+            # selenium.
+            from selenium.common.exceptions import NoSuchElementException
             with self.assertRaises(NoSuchElementException):
                 self.selenium.find_element_by_xpath(path_to_changeview_a)
 
